@@ -58,33 +58,35 @@ function TaskList({ tasks, onTaskUpdated, onTaskDeleted }) {
   }
 
   return (
-    <div className="p-4">
+    <div>
       <div className="space-y-3">
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
           >
-            <input
-              type="checkbox"
-              checked={task.is_completed}
-              onChange={() => handleToggleComplete(task)}
-              disabled={loadingTaskId === task.id}
-              className="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 cursor-pointer disabled:cursor-not-allowed"
+             <div
+              onClick={() => !loadingTaskId && handleToggleComplete(task)}
+              className={`w-5 h-5 flex-shrink-0 border-2 rounded cursor-pointer transition-all ${
+                task.is_completed
+                  ? 'bg-blue-500 border-blue-500'
+                  : 'bg-white border-gray-300 hover:border-blue-400'
+              } ${loadingTaskId === task.id ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
+
             <span
-              className={`flex-1 text-base ${
+              className={`flex-1 text-base text-center ${
                 task.is_completed
                   ? 'line-through text-gray-400'
                   : 'text-gray-800'
               }`}
             >
-              {task.description} <span className="text-gray-500">({task.category_name})</span>
+              {task.description} ({task.category_name})
             </span>
             <button
               onClick={() => handleDelete(task.id)}
               disabled={loadingTaskId === task.id}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm"
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm"
             >
               {loadingTaskId === task.id ? '...' : 'Supprimer'}
             </button>
