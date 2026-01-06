@@ -5,9 +5,12 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     Serializer for Category model including a count of associated tasks.
     """
+    tasks_count = serializers.SerializerMethodField()
+    
     class Meta:
         model = Category
-        fields = ['id', 'name', 'task_count']
+        fields = ['id', 'name', 'tasks_count']
+        read_only_fields = ['tasks_count']
     
     def get_tasks_count(self, obj):
         return obj.tasks.count()
@@ -17,7 +20,7 @@ class CategorySerializer(serializers.ModelSerializer):
         Validate that the category name is not empty or just whitespace.
         """
         if not value.strip():
-            raise serializers.ValidationError("Le nom de la catégorie ne peut pas être vide ou contenir uniquement des espaces.")
+            raise serializers.ValidationError("Le nom de la catégorie ne peut pas être vide")
         return value
 
 class TaskSerializer(serializers.ModelSerializer):
