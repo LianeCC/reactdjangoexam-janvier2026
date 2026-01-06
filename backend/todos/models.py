@@ -6,7 +6,6 @@ class Category(models.Model):
     """
     name = models.CharField(
         max_length=100,
-        unique=True,
         blank=False,
         verbose_name="Nom de la catégorie"
     )

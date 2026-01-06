@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Category, Task
+from django.db.models import Q
 
 class CategorySerializer(serializers.ModelSerializer):
     """
@@ -21,7 +22,16 @@ class CategorySerializer(serializers.ModelSerializer):
         """
         if not value.strip():
             raise serializers.ValidationError("Le nom de la catégorie ne peut pas être vide")
-        return value
+        cleaned_name = value.strip()
+        instance_id = self.instance.id if self.instance else None
+        
+        if Category.objects.filter(
+            name__iexact=cleaned_name
+        ).exclude(id=instance_id).exists():
+            raise serializers.ValidationError("Une catégorie avec ce nom existe déjà."
+            )
+        
+        return cleaned_name
 
 class TaskSerializer(serializers.ModelSerializer):
     """
@@ -39,7 +49,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'category',
             'category_name'
         ]
-        read_only_fields = ['created_at']
+        read_only_fields = ['created_at', 'category_name']
     
     def validate_description(self, value):
         """
